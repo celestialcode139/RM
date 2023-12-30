@@ -183,7 +183,7 @@ function App() {
     // Scene
     const scene = new THREE.Scene()
     //STL Model
-    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.1/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
+    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.2/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
       const material = new THREE.MeshPhongMaterial({ color: "gray", specular: "gray", shininess: 20 });
       var mesh = new THREE.Mesh(geometry, material);
 
