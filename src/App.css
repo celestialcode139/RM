@@ -1,0 +1,55 @@
+.header {
+    padding: 0px 20px !important;
+}
+
+.sidebar {
+    background-color: #dae0e9;
+    height: calc(100vh - 64px);
+    padding: 20px !important;
+    margin-top: 20px !important;
+    border-radius: 10px;
+}
+
+.layoutBody {
+    background-color: #ffffff;
+    height: calc(100vh - 64px);
+    padding: 20px !important;
+    margin-top: 20px !important;
+    border-radius: 10px;
+}
+
+.heading {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #00000096 !important;
+}
+
+.subHeading {
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: #00000096 !important;
+}
+
+.img {
+    width: 100% !important;
+    border-radius: 10px !important;
+}
+
+.product {
+    cursor: pointer;
+}
+
+.backBtn {
+    width: 30px;
+    margin-top: 10px;
+    background-color: black;
+    padding: 0px 5px;
+    border-radius: 5px;
+}
+
+.btn{
+    text-transform: capitalize!important;
+}
+.btn:hover {
+    background-color: #ffffff!important;
+}
