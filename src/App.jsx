@@ -3,6 +3,7 @@ import './App.css'
 import Header from "./component/header";
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import LinearShaft from "./assets/products/linear_shaft.jpg";
+import ShaftSuppoer from "./assets/products/shaft_support.jpeg";
 import Search from "./component/search";
 import BackIcon from "./assets/icons/back.png";
 import * as THREE from 'three'
@@ -114,6 +115,52 @@ function App() {
           ]
         }
       ]
+    },
+    {
+      id: "2",
+      title: "Shaft Support",
+      data: [
+        {
+          id: "ss",
+          image: ShaftSuppoer,
+          title: "Shaft Support",
+          productDetails: [
+            {
+              id: "ssd",
+              title: "Diameter",
+              data: [
+                {
+                  id: 'ssd14',
+                  val: "3/5",
+                  title: "Diameter"
+                }
+              ]
+            },
+            {
+              id: "ssl",
+              title: "Length",
+              data: [
+                {
+                  id: 'ssl6',
+                  val: "47",
+                  title: "Length"
+                }
+              ]
+            },
+            {
+              id: "m",
+              title: "Material",
+              data: [
+                {
+                  id: 'ssms',
+                  val: "Steel",
+                  title: "Material"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ];
 
@@ -122,7 +169,7 @@ function App() {
 
   useEffect(() => {
     modelInit(modelUrl);
-    console.log("activeOption:",activeOption);
+    console.log("activeOption:", activeOption);
   }, [openProduct, activeOption])
 
   const modelInit = (modelLink) => {
@@ -136,7 +183,7 @@ function App() {
     // Scene
     const scene = new THREE.Scene()
     //STL Model
-    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/STLModel@0.0.6/src/Model/${modelLink}.stl`, function (geometry) {
+    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.1/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
       const material = new THREE.MeshPhongMaterial({ color: "gray", specular: "gray", shininess: 20 });
       var mesh = new THREE.Mesh(geometry, material);
 
