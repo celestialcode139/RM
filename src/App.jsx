@@ -183,18 +183,30 @@ function App() {
     // Scene
     const scene = new THREE.Scene()
     //STL Model
-    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.2/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
+    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.3/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
       const material = new THREE.MeshPhongMaterial({ color: "gray", specular: "gray", shininess: 20 });
       var mesh = new THREE.Mesh(geometry, material);
 
 
-      mesh.scale.set(0.04, 0.04, 0.04)
-      mesh.position.x = -3;
+      mesh.scale.set(0.04, 0.04, 0.04);
 
       // Get the bounding box
       const boundingBox = new THREE.Box3().setFromObject(mesh);
       // Get dimensions
       const dimensions = boundingBox.getSize(new THREE.Vector3());
+      mesh.position.x = -dimensions.x / 2;
+
+      const label_div = document.querySelector('.label_div')
+
+      const labelDiv = document.createElement('div');
+      labelDiv.innerHTML = 'Label on Shaft';
+      labelDiv.style.position = 'absolute';
+      labelDiv.style.top = '50%';
+      labelDiv.style.left = '50%';
+      labelDiv.style.transform = 'translate(-50%, -50%)';
+      labelDiv.style.color = 'black';
+      console.log("labelDiv:", labelDiv);
+      label_div.appendChild(labelDiv);
 
 
       Font_loader.load('./src/assets/font/roboto.json', function (font) {
@@ -353,6 +365,12 @@ function App() {
                             // setactiveProduct();
                             setopenProduct(true);
                             setactiveProduct(item.productDetails);
+                            let tempActiveOptions = {};
+                            item.productDetails.forEach(e => {
+                              tempActiveOptions[e.title] = e.data[0].id
+                            });
+                            setactiveOption(tempActiveOptions);
+                            console.log("tempActiveOptions:", tempActiveOptions);
                           }}>
                             <Box component="img" src={item.image} className="img"></Box>
                             <Typography className='subHeading' sx={{ mt: 3, mb: 0.5 }}>{item.title}</Typography>
@@ -394,6 +412,7 @@ function App() {
           </Grid>
           <Grid item xs={9} className='layoutBody'>
             <canvas className="webgl"></canvas>
+            <div className='label_div'></div>
           </Grid>
         </Grid>
       </Container>
