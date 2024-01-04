@@ -1,3 +1,15 @@
+@font-face {
+    font-family: 'robustmotion';
+    src: url('./assets/font/BAHNSCHRIFT.TTF') format('TTF');
+}
+
+.logo {
+    font-family: "robustmotion"!important;
+    font-weight: bold!important;
+    font-style: italic!important;
+    font-size: 25px!important;
+}
+
 .header {
     padding: 0px 20px !important;
 }
@@ -8,6 +20,7 @@
     padding: 20px !important;
     margin-top: 20px !important;
     border-radius: 10px;
+    overflow-y: scroll;
 }
 
 .layoutBody {
@@ -46,10 +59,80 @@
     padding: 0px 5px;
     border-radius: 5px;
 }
-
-.btn{
-    text-transform: capitalize!important;
+.cartIcon {
+    width: 30px;
+    /* margin-top: 10px; */
+    /* padding: 0px 5px;
+    border-radius: 5px; */
 }
+
+.btn {
+    text-transform: capitalize !important;
+}
+
 .btn:hover {
-    background-color: #ffffff!important;
+    background-color: #ffffff !important;
+}
+.btn2 {
+    text-transform: lowercase !important;
+}
+
+.btn2:hover {
+    background-color: #ffffff !important;
+}
+.btnRed {
+    /* float: right; */
+    text-transform: capitalize !important;
+    background-color: #dc0d0d!important;
+    color:#ffffff!important;
+}
+.activeSideToggle {
+    text-transform: capitalize !important;
+    background-color: #dae0e9!important;
+    color:#000000!important;
+}
+.deActiveSideToggle {
+    text-transform: capitalize !important;
+    background-color: #e0e0e0!important;
+    color:#000000!important;
+}
+
+
+.itemPrice {
+    /* float: right; */
+   
+}
+.justifyContentEnd {
+    justify-content: end;
+    display: flex;   
+}
+.justifyContentCenter {
+    justify-content: center;
+    display: flex;   
+}
+.noPadding {
+   padding: 0px!important;
+}
+._2dDrawingImage {
+    width: 80%;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 5px;
+    text-align: left;
+  }
+
+  .deActiveDimentionUintBtn {
+    text-transform: capitalize !important;
+    background-color: #dae0e9!important;
+    color:#000000!important;
+    border-color:#000000!important;
+}
+.activeDimentionUintBtn {
+    text-transform: capitalize !important;
+    background-color: #e99d24!important;
+    color:#000000!important;
 }

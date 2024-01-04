@@ -41,11 +41,10 @@ function ResponsiveAppBar() {
             <Container maxWidth="xl">
                 <Box className="header" >
                     <Toolbar disableGutters>
-                        <Typography sx={{
+                        <Typography className='logo' sx={{
                             display: { xs: 'none', md: 'flex' }, mr: 2,
                             flexGrow: 1,
                             fontFamily: 'monospace',
-                            fontWeight: 700,
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
