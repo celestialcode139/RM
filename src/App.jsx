@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Header from "./component/header";
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography, ButtonGroup } from '@mui/material';
 import LinearShaft from "./assets/products/linear_shaft.jpg";
 import ShaftSuppoer from "./assets/products/shaft_support.jpeg";
+import _2DDrawing from "./assets/products/2d_drawing.jpeg";
+import StandardBearing from "./assets/products/CatalogImage.png";
+import OpenBearing from "./assets/products/OpenBearing.png";
 import Search from "./component/search";
 import BackIcon from "./assets/icons/back.png";
+import CartIcon from "./assets/icons/icons8-cart-80.png";
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
@@ -22,9 +26,12 @@ import * as dat from 'dat.gui'
 function App() {
   const [openProduct, setopenProduct] = useState(false);
   const [modelUrl, setmodelUrl] = useState("SSM-6-150");
+  const [detailMode, setDetailMode] = useState("specifications");
+  const [dimensionUnit, setDimensionUnit] = useState("imperial");
+  const [activePrice, setActivePrice] = useState(0);
   const [activeProduct, setactiveProduct] = useState([]);
   const [activeOption, setactiveOption] = useState({
-    "Diameter": "d14",
+    "Diameter": "d14w",
     "Length": "l6",
     "Material": "mc"
   });
@@ -83,6 +90,24 @@ function App() {
                   url: "SSM-12-150",
                   title: "Diameter"
                 },
+              ]
+            },
+            {
+              id: "d",
+              title: "DiameterMetric",
+              data: [
+                {
+                  id: 'd14',
+                  val: "10",
+                  url: "SSM-6-150",
+                  title: "Diameter"
+                },
+                {
+                  id: 'd12',
+                  val: "20",
+                  url: "SSM-6-150",
+                  title: "Diameter"
+                }
               ]
             },
             {
@@ -161,6 +186,92 @@ function App() {
           ]
         }
       ]
+    },
+    {
+      id: "3",
+      title: "Bearing",
+      data: [
+        {
+          id: "ss",
+          image: StandardBearing,
+          title: "Standard",
+          productDetails: [
+            {
+              id: "ssd",
+              title: "Diameter",
+              data: [
+                {
+                  id: 'SW4',
+                  val: "1",
+                  title: "Diameter"
+                }
+              ]
+            },
+            {
+              id: "ssl",
+              title: "Length",
+              data: [
+                {
+                  id: '',
+                  val: "47",
+                  title: "Length"
+                }
+              ]
+            },
+            {
+              id: "m",
+              title: "Material",
+              data: [
+                {
+                  id: '',
+                  val: "Steel",
+                  title: "Material"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "ss",
+          image: OpenBearing,
+          title: "Open",
+          productDetails: [
+            {
+              id: "ssd",
+              title: "Diameter",
+              data: [
+                {
+                  id: 'SWF4',
+                  val: "3/5",
+                  title: "Diameter"
+                }
+              ]
+            },
+            {
+              id: "ssl",
+              title: "Length",
+              data: [
+                {
+                  id: '',
+                  val: "47",
+                  title: "Length"
+                }
+              ]
+            },
+            {
+              id: "m",
+              title: "Material",
+              data: [
+                {
+                  id: '',
+                  val: "Steel",
+                  title: "Material"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ];
 
@@ -170,7 +281,21 @@ function App() {
   useEffect(() => {
     modelInit(modelUrl);
     console.log("activeOption:", activeOption);
-  }, [openProduct, activeOption])
+    if (!openProduct) {
+      setActivePrice(0)
+    } else if (activeOption?.Diameter === "d14" && dimensionUnit === 'metric') {
+      setActivePrice(3.60)
+    } else if (activeOption?.Diameter === "d14") {
+      setActivePrice(3.72)
+    } else if (activeOption?.Diameter === "d12" && dimensionUnit === 'metric') {
+      setActivePrice(6.50)
+    }
+    else if (activeOption?.Diameter === "d12") {
+      setActivePrice(4.32)
+    } else if (activeOption?.Diameter === "d38") {
+      setActivePrice(3.96)
+    }
+  }, [openProduct, activeOption,dimensionUnit])
 
   const modelInit = (modelLink) => {
     // Variables
@@ -183,7 +308,7 @@ function App() {
     // Scene
     const scene = new THREE.Scene()
     //STL Model
-    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.3/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
+    STL_loader.load(`https://cdn.jsdelivr.net/gh/celestialcode139/RM@0.0.4/src/assets/model/${activeOption.Diameter}${activeOption.Length}${activeOption.Material}.stl`, function (geometry) {
       const material = new THREE.MeshPhongMaterial({ color: "gray", specular: "gray", shininess: 20 });
       var mesh = new THREE.Mesh(geometry, material);
 
@@ -196,25 +321,13 @@ function App() {
       const dimensions = boundingBox.getSize(new THREE.Vector3());
       mesh.position.x = -dimensions.x / 2;
 
-      const label_div = document.querySelector('.label_div')
-
-      const labelDiv = document.createElement('div');
-      labelDiv.innerHTML = 'Label on Shaft';
-      labelDiv.style.position = 'absolute';
-      labelDiv.style.top = '50%';
-      labelDiv.style.left = '50%';
-      labelDiv.style.transform = 'translate(-50%, -50%)';
-      labelDiv.style.color = 'black';
-      console.log("labelDiv:", labelDiv);
-      label_div.appendChild(labelDiv);
-
 
       Font_loader.load('./src/assets/font/roboto.json', function (font) {
 
         // LENGTH
-        var LengthTextGeo = new TextGeometry(`${dimensions.x} in`, {
+        var LengthTextGeo = new TextGeometry(`${dimensions.x.toFixed(0)} in`, {
           font: font,
-          size: 0.3,
+          size: 0.2,
           height: 0.1,
           curveSegments: 12,
           bevelEnabled: true,
@@ -228,9 +341,9 @@ function App() {
         LengthMesh.position.x = -0.2;
         LengthMesh.position.y = -dimensions.y - 0.5
         // DIAMETER
-        var DiameterTextGeo = new TextGeometry(`${dimensions.y} in`, {
+        var DiameterTextGeo = new TextGeometry(`${dimensions.y.toFixed(0)} in`, {
           font: font,
-          size: 0.3,
+          size: 0.2,
           height: 0.1,
           curveSegments: 12,
           bevelEnabled: true,
@@ -290,13 +403,11 @@ function App() {
      */
     let layoutBody = document.querySelector(".layoutBody");
     const sizes = {
-      width: layoutBody.clientWidth,
+      width: layoutBody.clientWidth - 40,
       height: layoutBody.clientHeight
     }
     window.addEventListener('resize', () => {
-      // Update sizes
-      sizes.width = window.innerWidth
-      sizes.height = window.innerHeight
+
       // Update camera
       camera.aspect = sizes.width / sizes.height
       camera.updateProjectionMatrix()
@@ -350,7 +461,7 @@ function App() {
       <Header />
       <Container maxWidth="xl">
         <Grid container>
-          <Grid item xs={3} className='sidebar'>
+          <Grid item xs={2.5} className='sidebar'>
             <Typography className='heading' sx={{ mb: 2 }}>Parts</Typography>
             <Search />
             {
@@ -370,6 +481,7 @@ function App() {
                               tempActiveOptions[e.title] = e.data[0].id
                             });
                             setactiveOption(tempActiveOptions);
+
                             console.log("tempActiveOptions:", tempActiveOptions);
                           }}>
                             <Box component="img" src={item.image} className="img"></Box>
@@ -383,26 +495,58 @@ function App() {
 
                 :
                 <Box>
-                  <Box component="img" src={BackIcon} className='backBtn' onClick={() => setopenProduct(false)}></Box>
+                  <Box component="img" src={BackIcon} className='backBtn' onClick={() => {
+                    setActivePrice(0)
+                    setopenProduct(false)
+                  }}></Box>
+
+                  <ButtonGroup sx={{ mt: 3, borderColor: "#000" }} className='' >
+                    <Button className={dimensionUnit === "imperial" ? `activeDimentionUintBtn` : `deActiveDimentionUintBtn`} onClick={() => setDimensionUnit("imperial")}  >
+                      IMPERIAL
+                    </Button>
+                    <Button className={`${dimensionUnit === "metric" ? `activeDimentionUintBtn` : `deActiveDimentionUintBtn`}`} onClick={() => setDimensionUnit("metric")} >
+                      METRIC
+                    </Button>
+                  </ButtonGroup>
                   {
                     activeProduct.map((productDetail, i) => (
-                      <Box key={i}>
-                        <Typography className='subHeading' sx={{ mt: 3, mb: 0.5 }}>{productDetail.title}</Typography>
-                        <Grid container spacing={1}>
-                          {
-                            productDetail.data.map((val, i) => (
-                              <Grid key={i} item xs={4} className='product' >
-                                <Button onClick={() => {
-                                  setactiveOption({ ...activeOption, [val.title]: val.id });
-                                  setmodelUrl(val.url)
-                                }} variant="contained" size="small" className='btn' sx={{ background: activeOption[val.title] == val.id ? "white" : "#e0e0e0", color: "black" }}>
-                                  {val.val} in
-                                </Button>
-                              </Grid>
-                            ))
-                          }
-                        </Grid>
-                      </Box>
+                      dimensionUnit === "metric" && productDetail.title === "DiameterMetric" ?
+                        <Box key={i}>
+                          <Typography className='subHeading' sx={{ mt: 3, mb: 0.5 }}>Diameter</Typography>
+                          <Grid container spacing={1}>
+                            {
+                              productDetail.data.map((val, i) => (
+                                <Grid key={i} item xs={4} className='product' >
+                                  <Button onClick={() => {
+                                    setactiveOption({ ...activeOption, [val.title]: val.id });
+                                    setmodelUrl(val.url)
+                                  }} variant="contained" size="small" className='btn2' sx={{ background: activeOption[val.title] == val.id ? "white" : "#e0e0e0", color: "black" }}>
+                                    {val.val} mm
+                                  </Button>
+                                </Grid>
+                              ))
+                            }
+                          </Grid>
+                        </Box>
+                        :
+                        dimensionUnit === "metric" && productDetail.title === "Diameter" ? null
+                          : dimensionUnit === "imperial" && productDetail.title === "DiameterMetric" ? null : <Box key={i}>
+                            <Typography className='subHeading' sx={{ mt: 3, mb: 0.5 }}>{productDetail.title}</Typography>
+                            <Grid container spacing={1}>
+                              {
+                                productDetail.data.map((val, i) => (
+                                  <Grid key={i} item xs={4} className='product' >
+                                    <Button onClick={() => {
+                                      setactiveOption({ ...activeOption, [val.title]: val.id });
+                                      setmodelUrl(val.url)
+                                    }} variant="contained" size="small" className='btn' sx={{ background: activeOption[val.title] == val.id ? "white" : "#e0e0e0", color: "black" }}>
+                                      {val.val} in
+                                    </Button>
+                                  </Grid>
+                                ))
+                              }
+                            </Grid>
+                          </Box>
                     ))
                   }
 
@@ -410,9 +554,82 @@ function App() {
             }
 
           </Grid>
-          <Grid item xs={9} className='layoutBody'>
+          <Grid item xs={7} className='layoutBody '>
+            <div className='justifyContentEnd' >
+              <Button className='btnRed'  >
+                <Box component="img" src={CartIcon} className='cartIcon' onClick={() => setopenProduct(false)}></Box>
+                Add to Cart
+              </Button>
+            </div>
+            <div className='justifyContentEnd' >
+              <Typography className='itemPrice' >$ {activePrice} (CAD)</Typography>
+            </div>
             <canvas className="webgl"></canvas>
             <div className='label_div'></div>
+          </Grid>
+          <Grid item xs={2.5} className='sidebar noPadding'>
+            <div className='' >
+              <Button className={detailMode === "specifications" ? `activeSideToggle` : `deActiveSideToggle`} onClick={() => setDetailMode("specifications")}  >
+                Specifications
+              </Button>
+              <Button className={`${detailMode === "2d_drawing" ? `activeSideToggle` : `deActiveSideToggle`}`} onClick={() => setDetailMode("2d_drawing")} >
+                2D Drawing
+              </Button>
+            </div>
+            <Box sx={{ mt: 3 }} className="justifyContentCenter">
+              {
+
+                detailMode === "2d_drawing" ? <Box component="img" src={_2DDrawing} className='_2dDrawingImage' onClick={() => setopenProduct(false)}></Box> : null
+              }
+              {
+                detailMode === "specifications" ?
+                  <table style={{ width: "80%", border: "1px!important" }}>
+                    <tr>
+                      <th>Length of Tolerance</th>
+                      <td>+/- 1 MM / +/ 1/16”</td>
+                    </tr>
+                    <tr>
+                      <th>Depth of Hardness</th>
+                      <td>0.085”</td>
+                    </tr>
+                    <tr>
+                      <th>Weight</th>
+                      <td>0.233 LBS/IN</td>
+                    </tr>
+                    <tr>
+                      <th>Diameter Tolerance</th>
+                      <td>0.9995” / 0.9990”</td>
+                    </tr>
+                    <tr>
+                      <th>Material</th>
+                      <td>1060 Carbon Steel / CF53 1.1213</td>
+                    </tr>
+                    <tr>
+                      <th>Case Hardness</th>
+                      <td>60-65 RC</td>
+                    </tr>
+                    <tr>
+                      <th>End Configuration</th>
+                      <td>Break Edge, No Sharp Ends</td>
+                    </tr>
+                    <tr>
+                      <th>Part Number</th>
+                      <td>CS 1 L</td>
+                    </tr>
+                    <tr>
+                      <th>Country of Origin</th>
+                      <td>Germany</td>
+                    </tr>
+                    <tr>
+                      <th>Angle of Cut</th>
+                      <td>Up to 4 DEG</td>
+                    </tr>
+                  </table>
+                  : null
+              }
+            </Box>
+            {/* <Typography className='heading' sx={{ mb: 2 }}>Parts</Typography> */}
+
           </Grid>
         </Grid>
       </Container>
